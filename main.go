@@ -11,6 +11,7 @@ import (
 
 	clipboard "github.com/atotto/clipboard"
 	"gopkg.in/alecthomas/kingpin.v2"
+	"bytes"
 )
 
 var (
@@ -27,6 +28,7 @@ var (
 
 
 var configuration Configuration
+var client *http.Client
 type Configuration struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
@@ -42,16 +44,17 @@ func init() {
 	jsonDecoder := json.NewDecoder(configFile)
 	configuration = Configuration{}
 	jsonDecoder.Decode(&configuration)
-}
-
-func doGetRequest(){
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	client := &http.Client{Transport: tr}
+	client = &http.Client{Transport: tr}
+}
+
+func doGetRequest(){
+
 	payload := url.Values{}
 	payload.Add("url", *getUrl)
-	req, err := http.NewRequest("GET", "https://"+configuration.Server+configuration.Port+"?" + payload.Encode(), nil)
+	req, err := http.NewRequest("GET", "https://"+configuration.Server+configuration.Port+"/get?" + payload.Encode(), nil)
 	if(err != nil){
 		fmt.Println("Can't build request: "+ err.Error())
 	}
@@ -67,24 +70,40 @@ func doGetRequest(){
 	bodyString := string(bodyBytes)
 	fmt.Println(bodyString)
 
-
 	err = clipboard.WriteAll(bodyString)
 	if(err != nil){
 		fmt.Println("Can't write to clipboard: "+ err.Error())
 	}
-	fmt.Println(clipboard.ReadAll())
+}
+
+func doSaveRequest(){
+	url := "https://"+configuration.Server+configuration.Port+"/save"
+	fmt.Println("URL:>", url)
+
+	values := map[string]string{"url": *saveUrl,"username": *saveName, "password": *savePassword}
+	jsonValue, _ := json.Marshal(values)
+	jsonStr := bytes.NewBuffer(jsonValue)
+	req, err := http.NewRequest("POST", url, jsonStr)
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(configuration.User, configuration.Password)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Can't make save request: ", err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
 }
 
 func main(){
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
-		// Register user
 		case save.FullCommand():
-			fmt.Println(*saveUrl)
-			fmt.Println(*saveName)
-			fmt.Println(*savePassword)
-		// Post message
+			doSaveRequest()
 		case get.FullCommand():
-			fmt.Println(*getUrl)
 			doGetRequest()
 	}
 }
