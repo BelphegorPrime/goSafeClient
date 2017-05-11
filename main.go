@@ -8,6 +8,8 @@ import (
 	"os"
 	"encoding/json"
 	"io/ioutil"
+
+	clipboard "github.com/atotto/clipboard"
 )
 
 var configuration Configuration
@@ -50,4 +52,12 @@ func main(){
 	}
 	bodyString := string(bodyBytes)
 	fmt.Println(bodyString)
+
+	
+	err = clipboard.WriteAll(bodyString)
+	if(err != nil){
+		fmt.Println("Can't write to clipboard: "+ err.Error())
+	}
+	fmt.Println(clipboard.ReadAll())
+
 }
