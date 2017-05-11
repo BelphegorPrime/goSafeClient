@@ -50,7 +50,7 @@ func doGetRequest(){
 	}
 	client := &http.Client{Transport: tr}
 	payload := url.Values{}
-	//payload.Add("api_key", "myapikey")
+	payload.Add("url", *getUrl)
 	req, err := http.NewRequest("GET", "https://"+configuration.Server+configuration.Port+"?" + payload.Encode(), nil)
 	if(err != nil){
 		fmt.Println("Can't build request: "+ err.Error())
