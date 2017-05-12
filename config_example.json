@@ -1,0 +1,6 @@
+{
+  "user": "username",
+  "password": "password",
+  "server": "serveraddress",
+  "port": ":443"
+ }
