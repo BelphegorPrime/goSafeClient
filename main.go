@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"net/http"
 	"crypto/tls"
 	"os"
@@ -45,7 +44,7 @@ type Configuration struct {
 	Key 	 string `json:"key"`
 }
 
-func encrypt(key, text []byte) ([]byte, error) {
+func encrypt(text []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -61,7 +60,7 @@ func encrypt(key, text []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
-func decrypt(key, text []byte) ([]byte, error) {
+func decrypt(text []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -96,15 +95,20 @@ func init() {
 }
 
 func doGetRequest(){
+	url := "https://"+configuration.Server+configuration.Port+"/get"
 
-	payload := url.Values{}
-
-	ciphertext, err := encrypt(key, []byte(*getUrl))
+	// TODO maybe bugs rest here
+	ciphertext, err := encrypt([]byte(*getUrl))
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
-	payload.Add("url", string(ciphertext))
-	req, err := http.NewRequest("GET", "https://"+configuration.Server+configuration.Port+"/get?" + payload.Encode(), nil)
+	fmt.Println(string(ciphertext))
+
+	values := map[string]interface{}{"url": *getUrl, "urlCrypted": ciphertext}
+	jsonValue, _ := json.Marshal(values)
+	jsonStr := bytes.NewBuffer(jsonValue)
+
+	req, err := http.NewRequest("POST", url, jsonStr)
 	if(err != nil){
 		fmt.Println("Can't build request: "+ err.Error())
 	}
@@ -118,7 +122,7 @@ func doGetRequest(){
 		fmt.Println("Can't read response body: "+ err.Error())
 	}
 
-	result, err := decrypt(key, bodyBytes)
+	result, err := decrypt(bodyBytes)
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
@@ -147,7 +151,7 @@ func doSaveRequest(){
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	result, err := decrypt(key, body)
+	result, err := decrypt(body)
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
