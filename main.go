@@ -49,33 +49,33 @@ func encrypt(text []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	b := base64.StdEncoding.EncodeToString(text)
-	ciphertext := make([]byte, aes.BlockSize+len(b))
+	ciphertext := make([]byte, aes.BlockSize+len(text))
 	iv := ciphertext[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return nil, err
 	}
 	cfb := cipher.NewCFBEncrypter(block, iv)
-	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(b))
-	return ciphertext, nil
+	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(text))
+	encoded := base64.StdEncoding.EncodeToString(ciphertext)
+	return []byte(encoded), nil
 }
 
-func decrypt(text []byte) ([]byte, error) {
+func decrypt(encoded []byte) ([]byte, error) {
+	data, err := base64.StdEncoding.DecodeString(string(encoded))
+	if err != nil {
+		return nil, err
+	}
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-	if len(text) < aes.BlockSize {
+	if len(data) < aes.BlockSize {
 		return nil, errors.New("ciphertext too short")
 	}
-	iv := text[:aes.BlockSize]
-	text = text[aes.BlockSize:]
+	iv := data[:aes.BlockSize]
+	data = data[aes.BlockSize:]
 	cfb := cipher.NewCFBDecrypter(block, iv)
-	cfb.XORKeyStream(text, text)
-	data, err := base64.StdEncoding.DecodeString(string(text))
-	if err != nil {
-		return nil, err
-	}
+	cfb.XORKeyStream(data, data)
 	return data, nil
 }
 
@@ -97,14 +97,11 @@ func init() {
 func doGetRequest(){
 	url := "https://"+configuration.Server+configuration.Port+"/get"
 
-	// TODO maybe bugs rest here
 	ciphertext, err := encrypt([]byte(*getUrl))
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
-	fmt.Println(string(ciphertext))
-
-	values := map[string]interface{}{"url": *getUrl, "urlCrypted": ciphertext}
+	values := map[string]interface{}{"url": string(ciphertext)}
 	jsonValue, _ := json.Marshal(values)
 	jsonStr := bytes.NewBuffer(jsonValue)
 
