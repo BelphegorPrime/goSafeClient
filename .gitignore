@@ -26,3 +26,4 @@ _testmain.go
 safeClient
 .idea/
 config.json
+goSafeClient
