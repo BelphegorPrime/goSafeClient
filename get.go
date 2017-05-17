@@ -5,18 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	clipboard "github.com/atotto/clipboard"
-	"io/ioutil"
 	"net/http"
 )
 
 func doGetRequest() {
 	url := "https://" + configuration.Server + configuration.Port + "/get"
 
-	ciphertext, err := encrypt([]byte(*getUrl))
+	cipherText, err := encrypt([]byte(*getUrl))
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
-	values := map[string]interface{}{"url": string(ciphertext)}
+	values := map[string]interface{}{"url": string(cipherText)}
 	jsonValue, _ := json.Marshal(values)
 	jsonStr := bytes.NewBuffer(jsonValue)
 
@@ -29,15 +28,18 @@ func doGetRequest() {
 	if err != nil {
 		fmt.Println("Can't execute request: " + err.Error())
 	}
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Can't read response body: " + err.Error())
+
+	requestContent := getRequestContentFromResponse(resp)
+	returnLines := requestContent["responseText"].([]interface{})
+	var result string = ""
+	for i := 0; i < len(returnLines); i++ {
+		resultText, err := decrypt([]byte(returnLines[i].(string)))
+		if err != nil {
+			fmt.Println("Error: " + err.Error())
+		}
+		result = result + string(resultText)
 	}
 
-	result, err := decrypt(bodyBytes)
-	if err != nil {
-		fmt.Println("Error: " + err.Error())
-	}
 	bodyString := string(result)
 
 	fmt.Println(bodyString)

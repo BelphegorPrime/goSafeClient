@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -23,8 +22,9 @@ func doSaveRequest() {
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	result, err := decrypt(body)
+	//body, _ := ioutil.ReadAll(resp.Body)
+	requestContent := getRequestContentFromResponse(resp)
+	result, err := decrypt([]byte(requestContent["responseText"].(string)))
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}

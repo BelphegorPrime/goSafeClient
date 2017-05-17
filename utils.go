@@ -7,7 +7,23 @@ import (
 	"encoding/base64"
 	"errors"
 	"io"
+	"net/http"
+	"bytes"
+	"encoding/json"
+	"fmt"
 )
+
+func getRequestContentFromResponse(response *http.Response) map[string]interface{} {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(response.Body)
+	data := buf.Bytes()
+	var requestContent map[string]interface{}
+	err := json.Unmarshal(data, &requestContent)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return requestContent
+}
 
 func encrypt(text []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
