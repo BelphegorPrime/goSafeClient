@@ -2,11 +2,11 @@ package main
 
 import (
 	"crypto/aes"
-	"io"
 	"crypto/cipher"
-	"errors"
-	"encoding/base64"
 	"crypto/rand"
+	"encoding/base64"
+	"errors"
+	"io"
 )
 
 func encrypt(text []byte) ([]byte, error) {

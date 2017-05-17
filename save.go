@@ -1,16 +1,16 @@
 package main
 
 import (
-	"encoding/json"
 	"bytes"
-	"net/http"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 )
 
-func doSaveRequest(){
-	url := "https://"+configuration.Server+configuration.Port+"/save"
-	values := map[string]string{"url": *saveUrl,"username": *saveName, "password": *savePassword}
+func doSaveRequest() {
+	url := "https://" + configuration.Server + configuration.Port + "/save"
+	values := map[string]string{"url": *saveUrl, "username": *saveName, "password": *savePassword}
 	jsonValue, _ := json.Marshal(values)
 	jsonStr := bytes.NewBuffer(jsonValue)
 	req, err := http.NewRequest("POST", url, jsonStr)

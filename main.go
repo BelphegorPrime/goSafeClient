@@ -1,26 +1,25 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"crypto/tls"
-	"os"
 	"encoding/json"
+	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
+	"net/http"
+	"os"
 )
 
 var (
-	app      = kingpin.New("safeClient", "A command-line tool to safe new passwords and usernames.")
+	app = kingpin.New("safeClient", "A command-line tool to safe new passwords and usernames.")
 
-	save     = app.Command("save", "save a new password")
-	saveUrl = save.Arg("url", "the Url where the password is used").Required().String()
-	saveName = save.Arg("name", "username/login").Required().String()
+	save         = app.Command("save", "save a new password")
+	saveUrl      = save.Arg("url", "the Url where the password is used").Required().String()
+	saveName     = save.Arg("name", "username/login").Required().String()
 	savePassword = save.Arg("password", "password for the site").Required().String()
 
-	get        = app.Command("get", "Get username and password for an Url.")
-	getUrl   = get.Arg("url", "url you want the credentials for").Required().String()
+	get    = app.Command("get", "Get username and password for an Url.")
+	getUrl = get.Arg("url", "url you want the credentials for").Required().String()
 )
-
 
 var configuration Configuration
 var client *http.Client
@@ -31,13 +30,13 @@ type Configuration struct {
 	Password string `json:"password"`
 	Server   string `json:"server"`
 	Port     string `json:"port"`
-	Key 	 string `json:"key"`
+	Key      string `json:"key"`
 }
 
 func init() {
 	configFile, err := os.Open("./config.json")
 	if err != nil {
-		fmt.Println("Konfigurations Lesefehler: "+err.Error())
+		fmt.Println("Konfigurations Lesefehler: " + err.Error())
 	}
 	jsonDecoder := json.NewDecoder(configFile)
 	configuration = Configuration{}
@@ -49,11 +48,11 @@ func init() {
 	key = []byte(configuration.Key) // 32 bytes
 }
 
-func main(){
+func main() {
 	switch kingpin.MustParse(app.Parse(os.Args[1:])) {
-		case save.FullCommand():
-			doSaveRequest()
-		case get.FullCommand():
-			doGetRequest()
+	case save.FullCommand():
+		doSaveRequest()
+	case get.FullCommand():
+		doGetRequest()
 	}
 }
