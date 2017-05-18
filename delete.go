@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-func doSaveRequest() {
-	values := map[string]string{"url": *saveUrl, "username": *saveName, "password": *savePassword}
-	resp := doPostRequest(values, "save")
+func doDeleteRequest() {
+	values := map[string]string{"url": *deleteUrl, "username": *deleteName, "password": *deletePassword}
+	resp := doPostRequest(values, "delete")
 
 	requestContent := getRequestContentFromResponse(resp)
 	result, err := decrypt([]byte(requestContent["responseText"].(string)))
