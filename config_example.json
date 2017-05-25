@@ -3,5 +3,5 @@
   "password": "password",
   "server": "serveraddress",
   "port": ":443",
-  "key": "some32byteslongkey______________"
+  "key": "some32byteslongkey12345678901234"
  }

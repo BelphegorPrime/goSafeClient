@@ -1,16 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
-	"bytes"
-	"encoding/json"
-	"fmt"
 )
 
 func getRequestContentFromResponse(response *http.Response) map[string]interface{} {
@@ -60,8 +60,8 @@ func decrypt(encoded []byte) ([]byte, error) {
 	return data, nil
 }
 
-func doPostRequest(values map[string]string, paramter string) *http.Response{
-	url := "https://" + configuration.Server + configuration.Port + "/"+paramter
+func doPostRequest(values map[string]string, paramter string) *http.Response {
+	url := "https://" + configuration.Server + configuration.Port + "/" + paramter
 	jsonValue, _ := json.Marshal(values)
 	jsonStr := bytes.NewBuffer(jsonValue)
 

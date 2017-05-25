@@ -20,10 +20,10 @@ var (
 	get    = app.Command("get", "Get username and password for an Url.")
 	getUrl = get.Arg("url", "url you want the credentials for").Required().String()
 
-	delete 		= app.Command("delete", "Delete an entry")
-	deleteUrl 	= delete.Arg("url", "url you want to delete from").Required().String()
-	deleteName 	= delete.Arg("name", "username/login").Required().String()
-	deletePassword 	= delete.Arg("password", "password for the site").Required().String()
+	delete         = app.Command("delete", "Delete an entry")
+	deleteUrl      = delete.Arg("url", "url you want to delete from").Required().String()
+	deleteName     = delete.Arg("name", "username/login").Required().String()
+	deletePassword = delete.Arg("password", "password for the site").Required().String()
 )
 
 var configuration Configuration
