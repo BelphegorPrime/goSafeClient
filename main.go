@@ -12,6 +12,8 @@ import (
 var (
 	app = kingpin.New("safeClient", "A command-line tool to safe new passwords and usernames.")
 
+	all         = app.Command("all", "Get username and password for all Urls.")
+
 	save         = app.Command("save", "save a new password")
 	saveUrl      = save.Arg("url", "the Url where the password is used").Required().String()
 	saveName     = save.Arg("name", "username/login").Required().String()
@@ -61,5 +63,7 @@ func main() {
 		doGetRequest()
 	case delete.FullCommand():
 		doDeleteRequest()
+	case all.FullCommand():
+		doAllRequest()
 	}
 }
