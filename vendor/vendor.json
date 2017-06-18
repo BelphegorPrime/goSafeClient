@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "CDIzWaOm1agRyPcqIUyAcKiQ44Y=",
+			"path": "github.com/BelphegorPrime/lib",
+			"revision": "9cd56477f7f3539e37b0b338158da199662f9298",
+			"revisionTime": "2017-06-18T13:12:49Z"
+		},
+		{
 			"checksumSHA1": "KmjnydoAbofMieIWm+it5OWERaM=",
 			"path": "github.com/alecthomas/template",
 			"revision": "a0175ee3bccc567396460bf5acd36800cb10c49c",
@@ -33,5 +39,5 @@
 			"revisionTime": "2017-03-28T23:38:35Z"
 		}
 	],
-	"rootPath": "safeClient"
+	"rootPath": "goSafeClient"
 }

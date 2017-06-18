@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	clipboard "github.com/atotto/clipboard"
+	"github.com/BelphegorPrime/lib"
 )
 
 func doGetRequest() {
-	cipherText, err := encrypt([]byte(*getUrl))
+	cipherText, err := lib.Encrypt([]byte(*getUrl), key)
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
@@ -14,11 +15,11 @@ func doGetRequest() {
 
 	resp := doPostRequest(values, "get")
 
-	requestContent := getRequestContentFromResponse(resp)
+	requestContent := lib.GetRequestContentFromResponse(resp)
 	returnLines := requestContent["responseText"].([]interface{})
 	var result string = ""
 	for i := 0; i < len(returnLines); i++ {
-		resultText, err := decrypt([]byte(returnLines[i].(string)))
+		resultText, err := lib.Decrypt([]byte(returnLines[i].(string)), key)
 		if err != nil {
 			fmt.Println("Error: " + err.Error())
 		}

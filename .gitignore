@@ -27,3 +27,5 @@ safeClient
 .idea/
 config.json
 goSafeClient
+vendor
+!vendor/vendor.json

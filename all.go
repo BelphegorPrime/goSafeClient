@@ -1,18 +1,19 @@
 package main
 
 import (
-"fmt"
+	"fmt"
+	"github.com/BelphegorPrime/lib"
 )
 
 func doAllRequest() {
 	resp := doPostRequest(map[string]string{}, "all")
 
-	requestContent := getRequestContentFromResponse(resp)
+	requestContent := lib.GetRequestContentFromResponse(resp)
 
 	returnLines := requestContent["responseText"].([]interface{})
 	var result string = ""
 	for i := 0; i < len(returnLines); i++ {
-		resultText, err := decrypt([]byte(returnLines[i].(string)))
+		resultText, err := lib.Decrypt([]byte(returnLines[i].(string)), key)
 		if err != nil {
 			fmt.Println("Error: " + err.Error())
 		}
