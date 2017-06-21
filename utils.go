@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func doPostRequest(values map[string]string, paramter string) *http.Response {
+func doPostRequest(values map[string]interface{}, paramter string) *http.Response {
 	url := "https://" + configuration.Server + configuration.Port + "/" + paramter
 	jsonValue, _ := json.Marshal(values)
 	jsonStr := bytes.NewBuffer(jsonValue)

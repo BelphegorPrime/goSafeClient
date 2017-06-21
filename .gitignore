@@ -26,6 +26,8 @@ _testmain.go
 safeClient
 .idea/
 config.json
+config_local.json
+config_remote.json
 goSafeClient
 vendor
 !vendor/vendor.json

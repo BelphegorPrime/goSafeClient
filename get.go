@@ -11,7 +11,7 @@ func doGetRequest() {
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
 	}
-	values := map[string]string{"url": string(cipherText)}
+	values := map[string]interface{}{"url": string(cipherText), "crypto": 1}
 
 	resp := doPostRequest(values, "get")
 

@@ -6,7 +6,7 @@ import (
 )
 
 func doSaveRequest() {
-	values := map[string]string{"url": *saveUrl, "username": *saveName, "password": *savePassword}
+	values := map[string]interface{}{"url": *saveUrl, "username": *saveName, "password": *savePassword, "crypto": 1}
 	resp := doPostRequest(values, "save")
 
 	requestContent := lib.GetRequestContentFromResponse(resp)

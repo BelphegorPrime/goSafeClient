@@ -6,7 +6,7 @@ import (
 )
 
 func doDeleteRequest() {
-	values := map[string]string{"url": *deleteUrl, "username": *deleteName, "password": *deletePassword}
+	values := map[string]interface{}{"url": *deleteUrl, "username": *deleteName, "password": *deletePassword, "crypto": 1}
 	resp := doPostRequest(values, "delete")
 
 	requestContent := lib.GetRequestContentFromResponse(resp)

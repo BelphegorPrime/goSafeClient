@@ -6,7 +6,7 @@ import (
 )
 
 func doAllRequest() {
-	resp := doPostRequest(map[string]string{}, "all")
+	resp := doPostRequest(map[string]interface{}{"crypto": 1}, "all")
 
 	requestContent := lib.GetRequestContentFromResponse(resp)
 
